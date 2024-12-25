@@ -44,4 +44,20 @@ public class AuthController {
         userService.updateSchools(id, schools); // Save the updated user
         return ResponseEntity.ok("Schools updated successfully!");
     }
+
+    @GetMapping("/profile")
+    public ResponseEntity<?> getUserProfile(@RequestHeader("Authorization") String token) {
+        try {
+            String email = jwtUtil.extractUserEmail(token.replace("Bearer ", ""));
+
+            User user = userService.getUserByEmail(email);
+            if (user == null) {
+                return ResponseEntity.notFound().build();
+            }
+            System.out.println("User fetched: " + user);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+        }
+    }
 }

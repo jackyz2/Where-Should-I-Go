@@ -35,6 +35,7 @@ public class UserDAO {
             user.setId(rs.getLong("id"));
             user.setEmail(rs.getString("email"));
             user.setPassword(rs.getString("password"));
+            user.setSchools(rs.getString("schools"));
             return user;
         });
 
@@ -48,6 +49,7 @@ public class UserDAO {
             user.setId(rs.getLong("id"));
             user.setEmail(rs.getString("email"));
             user.setPassword(rs.getString("password"));
+            user.setSchools(rs.getString("schools"));
             return user;
         });
 

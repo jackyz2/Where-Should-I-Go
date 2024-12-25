@@ -10,6 +10,7 @@ public class JwtUtil {
 
     private final String SECRET_KEY = "jackyiswritingakeyherehelloworld123nihaowoshizhangyuqihello";
 
+    // Generate a token for a given email
     public String generateToken(String email) {
         return Jwts.builder()
                 .setSubject(email)
@@ -19,15 +20,66 @@ public class JwtUtil {
                 .compact();
     }
 
+    // Extract the email from a token
     public String extractEmail(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getSubject();
+        try {
+            return Jwts.parser()
+                    .setSigningKey(SECRET_KEY)
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getSubject();
+        } catch (ExpiredJwtException e) {
+            System.err.println("Token expired: " + e.getMessage());
+            throw e;
+        } catch (JwtException e) {
+            System.err.println("Invalid token: " + e.getMessage());
+            throw e;
+        }
     }
 
+    // Validate the token
     public boolean validateToken(String token, String email) {
-        return email.equals(extractEmail(token)) && !isTokenExpired(token);
+        try {
+            String extractedEmail = extractEmail(token);
+            return email.equals(extractedEmail) && !isTokenExpired(token);
+        } catch (JwtException e) {
+            System.err.println("Token validation failed: " + e.getMessage());
+            return false;
+        }
+    }
+    
+    private boolean isTokenExpired(String token) {
+        try {
+            Date expiration = Jwts.parser()
+                    .setSigningKey(SECRET_KEY)
+                    .parseClaimsJws(token)
+                    .getBody()
+                    .getExpiration();
+            return expiration.before(new Date());
+        } catch (ExpiredJwtException e) {
+            System.err.println("Token expired: " + e.getMessage());
+            return true;
+        } catch (JwtException e) {
+            System.err.println("Invalid token during expiration check: " + e.getMessage());
+            return true;
+        }
     }
 
-    private boolean isTokenExpired(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody().getExpiration().before(new Date());
+    public String extractUserEmail(String token) {
+        try {
+            System.out.printf("Token received: %s%n", token);
+            Claims claims = Jwts.parser()
+                    .setSigningKey(SECRET_KEY)
+                    .parseClaimsJws(token)
+                    .getBody();
+            System.out.printf("Claims extracted: %s%n", claims);
+            return claims.getSubject();
+        } catch (ExpiredJwtException e) {
+            System.err.println("Token expired: " + e.getMessage());
+            throw e;
+        } catch (JwtException e) {
+            System.err.println("Invalid token: " + e.getMessage());
+            throw e;
+        }
     }
 }
