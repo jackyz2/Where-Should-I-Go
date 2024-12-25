@@ -47,7 +47,7 @@ public class JwtUtil {
             return false;
         }
     }
-    
+
     private boolean isTokenExpired(String token) {
         try {
             Date expiration = Jwts.parser()
