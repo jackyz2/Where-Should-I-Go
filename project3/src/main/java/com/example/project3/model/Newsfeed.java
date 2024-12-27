@@ -2,13 +2,34 @@ package com.example.project3.model;
 
 import jakarta.persistence.*;
 
+import java.sql.Timestamp;
+
 public class Newsfeed {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private String email;
     private String school;
     private int academic;
     private int tuition;
     private int location;
     private String comment;
+    private Timestamp create_at;
+
+    public Timestamp getCreate_at() {
+        return create_at;
+    }
+
+    public void setCreate_at(Timestamp create_at) {
+        this.create_at = create_at;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getEmail() {
         return email;

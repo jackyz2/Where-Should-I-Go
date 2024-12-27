@@ -19,14 +19,16 @@ public class NewsfeedRepository {
         FROM newsfeed;
      */
     public List<Newsfeed> findAllNewsfeeds() {
-        String sql = "SELECT school, academic, tuition, location, comment FROM newsfeed";
+        String sql = "SELECT id, school, academic, tuition, location, comment, create_at FROM newsfeed ORDER BY create_at DESC";
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             Newsfeed newsfeed = new Newsfeed();
+            newsfeed.setId(rs.getInt("id"));
             newsfeed.setSchool(rs.getString("school"));
             newsfeed.setAcademic(rs.getInt("academic"));
             newsfeed.setTuition(rs.getInt("tuition"));
             newsfeed.setLocation(rs.getInt("location"));
             newsfeed.setComment(rs.getString("comment"));
+            newsfeed.setCreate_at(rs.getTimestamp("create_at"));
             return newsfeed;
         });
     }
@@ -38,14 +40,16 @@ public class NewsfeedRepository {
         FROM newsfeed;
      */
     public List<Newsfeed> findNewsfeedsBySchool(String school) {
-        String sql = "SELECT school, academic, tuition, location, comment FROM newsfeed WHERE school = ?";
+        String sql = "SELECT id, school, academic, tuition, location, comment, create_at FROM newsfeed WHERE school = ? ORDER BY create_at DESC";
         return jdbcTemplate.query(sql, new Object[]{school}, (rs, rowNum) -> {
             Newsfeed newsfeed = new Newsfeed();
+            newsfeed.setId(rs.getInt("id"));
             newsfeed.setSchool(rs.getString("school"));
             newsfeed.setAcademic(rs.getInt("academic"));
             newsfeed.setTuition(rs.getInt("tuition"));
             newsfeed.setLocation(rs.getInt("location"));
             newsfeed.setComment(rs.getString("comment"));
+            newsfeed.setCreate_at(rs.getTimestamp("create_at"));
             return newsfeed;
         });
     }
@@ -56,8 +60,9 @@ public class NewsfeedRepository {
         VALUES (?, ?, ?, ?, ?, ?);
      */
     public int insertNewsfeed(Newsfeed newsfeed) {
-        String sql = "INSERT INTO newsfeed (email, school, academic, tuition, location, comment) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO newsfeed (id, email, school, academic, tuition, location, comment) VALUES (?, ?, ?, ?, ?, ?, ?)";
         return jdbcTemplate.update(sql,
+                newsfeed.getId(),
                 newsfeed.getEmail(),
                 newsfeed.getSchool(),
                 newsfeed.getAcademic(),
