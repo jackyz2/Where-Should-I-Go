@@ -27,7 +27,7 @@ export function RatingRing({ rating, label }: RatingRingProps) {
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
           strokeLinecap="round"
-          stroke="currentColor"
+          stroke="#fad902"
           fill="transparent"
           r="18"
           cx="20"
