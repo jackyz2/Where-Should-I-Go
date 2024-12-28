@@ -22,7 +22,7 @@ const Login: React.FC = () => {
       if (response.ok) {
         const token = await response.text();
         localStorage.setItem('token', token);
-        router.push('/welcome');
+        router.push('/newsfeed');
       } else {
         const errorMessage = await response.text();
         setError(errorMessage || 'Invalid credentials!');

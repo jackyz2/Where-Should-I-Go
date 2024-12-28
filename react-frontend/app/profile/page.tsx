@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import ProfileForm from './ProfileForm';
+import { useRouter } from 'next/navigation';
 
 interface User {
   id: string;
@@ -13,8 +14,8 @@ interface User {
 
 const Profile: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
+  const [error, setError] = useState<string | null>(null);  
+  const router = useRouter();
   useEffect(() => {
     fetchUserProfile();
   }, []);
@@ -26,8 +27,12 @@ const Profile: React.FC = () => {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
       });
-      if (response.ok) {
-        const userData: User = await response.json();
+      if (response.status === 401) {
+        // Token is invalid or expired, redirect to login page
+        localStorage.removeItem('token'); // Clear the invalid token
+        router.push('/login');
+      } else if (response.ok) {
+        const userData = await response.json();
         setUser(userData);
       } else {
         throw new Error('Failed to fetch user profile');
